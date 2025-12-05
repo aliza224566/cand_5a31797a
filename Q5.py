@@ -1,25 +1,15 @@
-import math
-
-def standardize_columns(X):
+def standardize_columns(X) -> list[list[float]]:
     if not X:
         return []
-
-    rows = len(X)
-    cols = len(X[0])
-
-    out = [[0]*cols for _ in range(rows)]
-
+    rows, cols = len(X), len(X[0])
+    result = [[0]*cols for _ in range(rows)]
+    
     for j in range(cols):
         col = [X[i][j] for i in range(rows)]
         mean = sum(col) / rows
-        var = sum((v - mean) ** 2 for v in col) / rows
+        var = sum((x - mean)**2 for x in col) / rows
         std = math.sqrt(var)
+        for i in range(rows):
+            result[i][j] = round((X[i][j] - mean) / std if std != 0 else 0, 4)
+    return result
 
-        if std == 0:
-            for i in range(rows):
-                out[i][j] = 0.0
-        else:
-            for i in range(rows):
-                out[i][j] = round((X[i][j] - mean) / std, 4)
-
-    return out
