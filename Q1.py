@@ -1,17 +1,17 @@
 import math
 
-def top_k_cosine(query, docs, k):
-    def cosine(q, d):
-        dot = sum(q[i] * d[i] for i in range(len(q)))
-        nq = math.sqrt(sum(val * val for val in q))
-        nd = math.sqrt(sum(val * val for val in d))
-        if nq == 0 or nd == 0:
-            return 0
-        return dot / (nq * nd)
+def kmeans_assign(points, centroids) -> list[int]:
+    assignments = []
+    for p in points:
+        min_dist = float('inf')
+        assigned_idx = 0
+        for i, c in enumerate(centroids):
+            # Euclidean distance
+            dist = math.sqrt(sum((px - cx) ** 2 for px, cx in zip(p, c)))
+            if dist < min_dist or (dist == min_dist and i < assigned_idx):
+                min_dist = dist
+                assigned_idx = i
+        assignments.append(assigned_idx)
+    return assignments
 
-    sims = []
-    for i, d in enumerate(docs):
-        sims.append((cosine(query, d), i))
 
-    sims.sort(key=lambda x: (-x[0], x[1]))
-    return [idx for _, idx in sims[:k]]
